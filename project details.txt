@@ -1,0 +1,102 @@
+
+
+
+	@RequestMapping(value = "/verifyLogin", method = RequestMethod.POST)
+	public String verifyLogin(HttpServletRequest request, HttpServletResponse res) throws SQLException {
+		String name = request.getParameter("username");
+		String password = request.getParameter("password");
+		DataBaseHandler dbHnl = new DataBaseHandler();
+		boolean authenticated = dbHnl.authenticateUser(uname, password) 
+		if (dbPass.equals(password)) {
+			HttpSession session = request.getSession();
+			session.setAttribute("uname", name);
+			return "home";
+		} else {
+			return "loginPage";
+		
+
+	}
+
+}
+
+------------------------------------------
+	public String verifyLogin(HttpServletRequest request, HttpServletResponse res) throws SQLException {
+		String name = request.getParameter("username");
+		String password = request.getParameter("password");		
+		String query = "select pass from login where un = '" + name + "';";
+		System.out.println("select pass from login where un = '" + name + "';");
+		ResultSet rs = runQuery.runQuery(query);
+		rs.last(); 
+		int rowCnt = rs.getRow();		
+		String dbPass = "";
+		if(rowCnt != 0)
+		{
+			rs.beforeFirst();
+			rs.next();
+			dbPass = rs.getString(1);
+			System.out.println(dbPass);
+		}
+		if(!dbPass.equals(""))
+		{
+		if (dbPass.equals(password)) {
+			HttpSession session = request.getSession();
+			session.setAttribute("uname", name);
+			return "home";
+		} else {
+			return "loginPage";
+		}
+		}
+		else
+		{
+			return "loginPage";
+		}
+	}
+
+
+
+
+CREATE TABLE InterAction
+(
+msgId int,
+message VARCHAR(500), 
+KeyWords VARCHAR(500),
+TypeOfQ VARCHAR(50), 
+QueryMapKey VARCHAR(10),
+answer VARCHAR(200)
+)
+
+INSERT INTO InterAction(msgId ,message , KeyWords,TypeOfQ ,QueryMapKey,answer)
+VALUES(1112,'How many of my policies are in-force','policies,in-force','QueryToTable','INFPO','');
+
+INSERT INTO InterAction(msgId ,message , KeyWords,TypeOfQ ,QueryMapKey,answer)
+VALUES(1112,'I want to know the policy number, premium due-date and premium amount for all my policies','policies,number,premium,due,amount,due-date,premium amount','QueryToTable','PNPDPA','');
+
+INSERT INTO InterAction(msgId ,message , KeyWords,TypeOfQ ,QueryMapKey,answer)
+VALUES(1113,'I want to know the policy number, premium due-date and premium amount within next 30 days','policies,number,premium,due,amount,due-date,premium amount,Next, 30 Days, 30days,days','QueryToTable','PNDAITD','');
+I want to know the policy number, premium due-date and premium amount within next 30 days
+INSERT INTO InterAction(msgId ,message , KeyWords,TypeOfQ ,QueryMapKey,answer)
+VALUES(1115,'I want to know the policy maturity date','policy,maturity,date','InterActive','POMTDT','Please provide policy number');
+
+
+CREATE TABLE QueryKeyWord
+(
+KeyWord int,
+Query VARCHAR(500)
+)
+
++---------+------------------------------------------------------------------------------------+
+| keyword | query                                                                              |
++---------+------------------------------------------------------------------------------------+
+| claim   | select status from claim where un="username" and p_id="policynumber"               |
+| ddate   | select m_duedate from policy_records where un="username" and p_id="policynumber"   |
+| mpn     | select p_id from policy_records where un="username"                                |
+| priamt  | select pri_yearly from policy_records where un="username" and p_id="policynumber"  |
+| primon  | select pri_monthly from policy_records where un="username" and p_id="policynumber" |
++---------+------------------------------------------------------------------------------------+
+
+
+
+InterAction table for message and querymap
+
+insert into QueryKeyWord(KeyWord,Query)
+values('POMTDT','select a.p_id,b.p_name, a.end_date from policy_records a ,policy b where a.p_id=b.p_id');
